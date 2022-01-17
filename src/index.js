@@ -67,8 +67,27 @@ app.get('/tasks/:id',async(req,res)=>{
 //   }).catch((e)=>{
 //     res.status(500).send(e);
 //   })
-
 // })
+
+app.patch('/tasks/:id',async (req, res)=>{
+  const updates=Object.keys(req.body);
+  const allowedUpdates=['description','completed'];  // Without this mongoose doesn't throw an error if you try to update something that doesn't exist like {'religion':'agnostic'}
+  if (!updates.every(v=>allowedUpdates.includes(v))){
+    return res.status(400).send({error: "Property to update doesn't exist"})
+  }
+  try {
+    const task=await Task.findByIdAndUpdate(req.params.id,req.body,{
+      new:true,
+      runValidators:true,
+    })
+    if (!task){
+      return res.status(404).send({error: "Task doesn't exist"})
+    }
+    res.status(200).send(task);
+  } catch(e){
+    res.status(400).send(e);
+  }
+})
 
 app.post('/users',async(req,res)=>{
   const user = new User(req.body);
@@ -138,10 +157,10 @@ app.get('/users/:id',async (req,res)=>{
 app.patch('/users/:id',async (req, res)=>{
   const updates=Object.keys(req.body);
   const allowedUpdates=['name','email','password','age'];  // Without this mongoose doesn't throw an error if you try to update something that doesn't exist like {'religion':'agnostic'}
-  try{
-    if (!updates.every(v=>allowedUpdates.includes(v))){
-      return res.status(400).send({Error: "Property to update doesn't exist"})
-    }
+  if (!updates.every(v=>allowedUpdates.includes(v))){
+    return res.status(400).send({error: "Property to update doesn't exist"})
+  }
+  try {
     const user=await User.findByIdAndUpdate(req.params.id,
       req.body,{
         new:true, 
