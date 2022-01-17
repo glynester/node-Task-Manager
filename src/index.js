@@ -134,6 +134,29 @@ app.get('/users/:id',async (req,res)=>{
 //   })
 // })
 
+// Update routes are the most complex.
+app.patch('/users/:id',async (req, res)=>{
+  const updates=Object.keys(req.body);
+  const allowedUpdates=['name','email','password','age'];  // Without this mongoose doesn't throw an error if you try to update something that doesn't exist like {'religion':'agnostic'}
+  try{
+    if (!updates.every(v=>allowedUpdates.includes(v))){
+      return res.status(400).send({Error: "Property to update doesn't exist"})
+    }
+    const user=await User.findByIdAndUpdate(req.params.id,
+      req.body,{
+        new:true, 
+        runValidators:true,
+      });
+    if (!user){
+      return res.status(404).send();
+    }
+    res.status(202).send(user);
+  } catch(e){
+    res.status(400).send(e);
+  }
+  
+})
+
 app.listen(port,()=>{
   console.log("Server is up and running on port "+port);
 });
