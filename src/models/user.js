@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');   // Validation package
 const bcrypt=require('bcryptjs');
+const jwt=require('jsonwebtoken');
 // Pass model object to schema
 // const userSchema = new mongoose.Schema({*user_model_object});
 
@@ -49,10 +50,26 @@ const userSchema = new mongoose.Schema({
       }*/
     }
 
-  }
+  },
+  tokens:[{
+    token: {
+      type: String,
+      required: true,
+    }
+  }],
 })
 
-// Will be accessible on model once set up on statics.
+// Attached to schema methods. Will be accessible on INSTANCES.
+// Will need this binding so use a standard function
+userSchema.methods.generateAuthToken=async function(){
+  const user=this;
+  const token = jwt.sign({_id: user._id.toString()},'thisismysecret');
+  user.tokens = user.tokens.concat({token});
+  await user.save();
+  return token;
+};
+
+// Will be accessible on MODEL once set up on statics. 
 userSchema.statics.findByCredentials = async(email,password)=>{
   const user=await User.findOne({email});
   if (!user){

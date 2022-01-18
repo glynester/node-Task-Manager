@@ -12,6 +12,42 @@ app.use(express.json()); // parses incoming JSON to an object.
 app.use(userRouter);
 app.use(taskRouter);
 
+// const jwt=require('jsonwebtoken');
+// const myfunction=async()=>{
+//   const secret='thisismysecret';
+//   const token = jwt.sign({_id:'abc123'},'thisismysecret',{ expiresIn: "10 seconds"});// Can use plain english for expiresIn, e.g. 2 weeks or 1 year, etc.
+//   console.log(token);
+ 
+//   console.log("1) Verified?: ",jwt.verify(token,secret));
+//   // 1) Verified?:  { _id: 'abc123', iat: 1642535112, exp: 1642535122 }
+//   try {
+//     jwt.verify(token+'XXX',secret);
+//   } catch(e){ console.log("2) Verified?: ",e) }
+//   // 2) Verified?:  JsonWebTokenError: invalid signature
+//   try {
+//     jwt.verify(token,secret+'XXX');
+//   } catch(e){ console.log("3) Verified?: ",e); }
+//   // 3) Verified?:  JsonWebTokenError: invalid signature
+//   setTimeout(()=>{
+//     try {
+//       jwt.verify(token,secret);
+//     } catch(e){ console.log("1) Verified?: ",e) }
+//     // 1) Verified?:  TokenExpiredError: jwt expired
+//     // expiredAt: 2022-01-18T19:45:22.000Z
+//     try {
+//       jwt.verify(token+'XXX',secret);
+//     } catch(e){ console.log("2) Verified?: ",e) }
+//     // 2) Verified?:  JsonWebTokenError: invalid signature
+//     try {
+//       jwt.verify(token,secret+'XXX');
+//     } catch(e){ console.log("3) Verified?: ",e); }
+//     // 3) Verified?:  JsonWebTokenError: invalid signature
+//   },12000);
+// }
+// myfunction();
+
+
+
 // // bcryptjs uses promises
 // const bcrypt=require('bcryptjs');
 // const myfunction=async()=>{

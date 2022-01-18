@@ -5,11 +5,15 @@ const router=new express.Router();
 //   res.send('New user route working!!!');
 // })
 // Need to change app.post to router.post. "app" no longer exists in this file.
+
+// New user creation route
+// Creates an auth token as they are obviously who they say they are.
 router.post('/users',async(req,res)=>{
   const user = new User(req.body);
   try {
     await user.save();
-    res.status(201).send(user);
+    const token = await user.generateAuthToken();
+    res.status(201).send({user,token,loginStatus:"YOU ARE (in theory) LOGGED IN!!!"});
   } catch(e){
     res.status(400).send(e);
   }
@@ -29,10 +33,12 @@ router.post('/users',async(req,res)=>{
 // })
 
 // Login route
+// Creates an auth token
 router.post('/users/login',async (req, res)=>{
   try {
     const user=await User.findByCredentials(req.body.email,req.body.password);  // our own function
-    res.status(200).send("YOU ARE (in theory) LOGGED IN :\n"+user);
+    const token= await user.generateAuthToken(); // generateAuthToken lives on the user instance
+    res.status(200).send({user, token, loginStatus:"YOU ARE (in theory) LOGGED IN!!!"});
   } catch(e){
     res.status(400).send(e);
   }
