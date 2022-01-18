@@ -12,6 +12,20 @@ app.use(express.json()); // parses incoming JSON to an object.
 app.use(userRouter);
 app.use(taskRouter);
 
+// // bcryptjs uses promises
+// const bcrypt=require('bcryptjs');
+// const myfunction=async()=>{
+//   const password="Red12345";
+//   const hashedPassword=await bcrypt.hash(password,8);  // 2nd arguments is number of hashing rounds to complete.
+//   console.log(password);
+//   console.log(hashedPassword);
+//   const isMatch = await bcrypt.compare(password,hashedPassword)
+//   const isNoMatch = await bcrypt.compare("Red123456",hashedPassword)
+//   console.log(isMatch?"Match :)":"No Match!!! :(");
+//   console.log(isNoMatch?"Match :)":"No Match!!! :(");
+// }
+// myfunction();
+
 // const router = new express.Router();
 // router.get('/test',(req,res)=>{
 //   res.send('This is from Test router!!!');

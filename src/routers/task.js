@@ -74,13 +74,18 @@ router.patch('/tasks/:id',async (req, res)=>{
     return res.status(400).send({error: "Property to update doesn't exist"})
   }
   try {
-    const task=await Task.findByIdAndUpdate(req.params.id,req.body,{
-      new:true,
-      runValidators:true,
-    })
+    // Need to split out the "save" action so it can be intercepted by the middleware to do a "pre" save update of the plain text password to a hashed password.
+    // const task=await Task.findByIdAndUpdate(req.params.id,req.body,{
+    //   new:true,
+    //   runValidators:true,
+    // })
+    // The lines below (up to 'await task.save()') replace commented code above. Need to split out findByIdAndUpdate so that the middleware can be used, as it runs "pre" to 'save' running. 
+    const task=await Task.findById(req.params.id);
     if (!task){
       return res.status(404).send({error: "Task doesn't exist"})
     }
+    updates.forEach(update=>task[update]=req.body[update]);
+    await task.save();
     res.status(200).send(task);
   } catch(e){
     res.status(400).send(e);

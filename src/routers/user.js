@@ -15,6 +15,8 @@ router.post('/users',async(req,res)=>{
   }
 })
 
+// Plain text passwords might be provided to our app at creat user and update user.
+
 // app.post('/users',(req,res)=>{
 //   const user=new User(req.body);
 //   user.save().then(()=>{
@@ -77,14 +79,21 @@ router.patch('/users/:id',async (req, res)=>{
     return res.status(400).send({error: "Property to update doesn't exist"})
   }
   try {
-    const user=await User.findByIdAndUpdate(req.params.id,
-      req.body,{
-        new:true, 
-        runValidators:true,
-      });
+    // const user=await User.findByIdAndUpdate(req.params.id,
+      // req.body,{
+      //   new:true, 
+      //   runValidators:true,
+      // });
+    // 
+    // The lines below (up to await user.save()) replace commented code above. Need to split out findByIdAndUpdate so that the middleware can be used, as it runs "pre" to 'save' running.  
+    const user=await User.findById(req.params.id);
     if (!user){
-      return res.status(404).send();
+      return res.status(404).send({error:"User not found"});
     }
+    // console.log("Prior to upates and save: ", user)
+    updates.forEach(update=>user[update]=req.body[update]);
+    // console.log("After upates but before save: ", user)
+    await user.save();    // Middleware can now be used as it runs "pre" to 'save' running.
     res.status(202).send(user);
   } catch(e){
     res.status(400).send(e);
