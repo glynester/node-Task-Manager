@@ -15,7 +15,7 @@ router.post('/users',async(req,res)=>{
   }
 })
 
-// Plain text passwords might be provided to our app at creat user and update user.
+// Plain text passwords might be provided to our app at create user and update user.
 
 // app.post('/users',(req,res)=>{
 //   const user=new User(req.body);
@@ -27,6 +27,16 @@ router.post('/users',async(req,res)=>{
 //   // console.log(req.body);
 //   // res.send('testing');
 // })
+
+// Login route
+router.post('/users/login',async (req, res)=>{
+  try {
+    const user=await User.findByCredentials(req.body.email,req.body.password);  // our own function
+    res.status(200).send("YOU ARE (in theory) LOGGED IN :\n"+user);
+  } catch(e){
+    res.status(400).send(e);
+  }
+})
 
 router.get('/users',async(req,res)=>{
   try {

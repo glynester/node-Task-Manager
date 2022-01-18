@@ -4,6 +4,8 @@ const bcrypt=require('bcryptjs');
 // Pass model object to schema
 // const userSchema = new mongoose.Schema({*user_model_object});
 
+// After setting unique: true we need to drop database.
+// Hash the plain text password before saving.
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -12,6 +14,7 @@ const userSchema = new mongoose.Schema({
   },
   email:{
     type: String,
+    unique: true,
     required: true,
     trim: true,
     lowercase: true,
@@ -48,6 +51,19 @@ const userSchema = new mongoose.Schema({
 
   }
 })
+
+// Will be accessible on model once set up on statics.
+userSchema.statics.findByCredentials = async(email,password)=>{
+  const user=await User.findOne({email});
+  if (!user){
+    throw new Error('No user with that email - unable to log in');
+  }
+  const isMatch=await bcrypt.compare(password,user.password);
+  if (!isMatch){
+    throw new Error('Incorrect password - unable to log in');
+  }
+  return user;
+}
 
 // pre and post methods - just before or just after an event.
 // first argument is the event name and second is function to run (must be a normal function to bind "this")
