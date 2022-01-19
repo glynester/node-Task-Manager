@@ -1,11 +1,13 @@
 const express=require('express');
-const User=require('../models/user')
+const User=require('../models/user');
+const auth=require('../middleware/auth')
 const router=new express.Router();
 // router.get('/test',(req,res)=>{
 //   res.send('New user route working!!!');
 // })
 // Need to change app.post to router.post. "app" no longer exists in this file.
 
+// Authentication reqd for every route besides signup and login
 // New user creation route
 // Creates an auth token as they are obviously who they say they are.
 router.post('/users',async(req,res)=>{
@@ -44,13 +46,18 @@ router.post('/users/login',async (req, res)=>{
   }
 })
 
-router.get('/users',async(req,res)=>{
-  try {
-    const users=await User.find({});
-    return res.status(200).send(users);
-  } catch(e){
-    return res.status(500).send(e);
-  } 
+// Route in its current form (after adding auth) is no longer needed as we will see other user's data. Route will be repurposed to send back the user's data.
+// router.get('/users', auth, async(req,res)=>{
+//   try {
+//     const users=await User.find({});
+//     return res.status(200).send(users);
+//   } catch(e){
+//     return res.status(500).send(e);
+//   } 
+// })
+// Repurposed route taken from commented out "get all users" route above. Will bring back user's own data only.
+router.get('/users/me', auth, async(req,res)=>{
+  res.send(req.user);   // Custom property added to "req" by auth function. Now used as a awy to send back the user's own data.
 })
 
 // app.get('/users',(req,res)=>{

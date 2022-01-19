@@ -8,6 +8,21 @@ const taskRouter=require('./routers/task');
 const app = express();
 const port = process.env.PORT||3000; // heroku => process.env.PORT
 
+// // Maintenance message
+// app.use((req,res,next)=>{
+//   res.status(503).send({error: "Maintenance in progress. No access until complete."});      // 503 Service Unavailable
+// })
+
+// app.use((req, res, next)=>{
+//   // console.log(req.method,req.path);
+//   if (req.method==='GET'){
+//     res.send('No GET requests today!!!')
+//   } else {
+//     next();   // Have to call next
+//   }
+// })
+
+
 app.use(express.json()); // parses incoming JSON to an object.
 app.use(userRouter);
 app.use(taskRouter);
