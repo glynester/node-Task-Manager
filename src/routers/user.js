@@ -40,7 +40,9 @@ router.post('/users/login',async (req, res)=>{
   try {
     const user=await User.findByCredentials(req.body.email,req.body.password);  // our own function
     const token= await user.generateAuthToken(); // generateAuthToken lives on the user instance
-    res.status(200).send({user, token, loginStatus:"YOU ARE (in theory) LOGGED IN!!!"});
+    // Amend user object with custom "getPublicProfile" so that sensitive data is not sent back.
+    // res.status(200).send({user:user.getPublicProfile(), token});
+    res.status(200).send({user, token});
   } catch(e){
     res.status(400).send(e);
   }

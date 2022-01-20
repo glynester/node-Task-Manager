@@ -59,6 +59,19 @@ const userSchema = new mongoose.Schema({
   }],
 })
 
+// Instance method to limit data being sent back to user.
+// userSchema.methods.getPublicProfile = function(){
+  // Second method is just to rename method to "toJSON". In this form it doesn't need to be specifically called on the routes as it did when called "getPublicProfile".
+  // How does "toJSON" run without being explicitly called? res.send calls JSON.stringify behind the scenes. The toJSON method runs and only the properties we want to expose are sent back - 
+  // see code explanation on index.js
+  userSchema.methods.toJSON = function(){
+  const user=this;
+  const userObject=user.toObject(); // Just raw profile data.
+  delete userObject.tokens;
+  delete userObject.password;
+  return userObject;
+}
+
 // Attached to schema methods. Will be accessible on INSTANCES.
 // Will need this binding so use a standard function
 userSchema.methods.generateAuthToken=async function(){

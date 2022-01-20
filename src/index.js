@@ -87,5 +87,20 @@ app.listen(port,()=>{
   console.log("Server is up and running on port "+port);
 });
 
+// const pet ={
+//   name: "BooBoo"
+// }
+
+// pet.toJSON=function(){
+//   console.log("this=>",this);    // this=> { name: 'BooBoo', toJSON: [Function (anonymous)] }
+//   return this;  
+//   // return {};          // {}
+// }
+
+// calls toJSON
+// console.log("JSON.stringify=>",JSON.stringify(pet));   
+// JSON.stringify=> {"name":"BooBoo"}
+// OR
+// JSON.stringify=> {}
 
 
