@@ -58,6 +58,8 @@ const userSchema = new mongoose.Schema({
       required: true,
     }
   }],
+},{
+  timestamps:true,
 })
 
 // Reference between user and task is on a virtual field. We don't change what we store for the user document.

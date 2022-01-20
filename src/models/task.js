@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 // const validator = require('validator');   // Validation package
-
-const Task = mongoose.model('Task',{
+// Certain things can only be customised when we have an explicitly created schema - such as enabling time stamps.
+const taskSchema=new mongoose.Schema({
   description: {
     type: String,
     trim: true,
@@ -16,7 +16,11 @@ const Task = mongoose.model('Task',{
     required: true,
     ref: 'User'
   }
+},{
+  timestamps: true,
 })
+
+const Task = mongoose.model('Task',taskSchema);
 
 module.exports=Task;
 
