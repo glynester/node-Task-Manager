@@ -46,6 +46,29 @@ router.post('/users/login',async (req, res)=>{
   }
 })
 
+// Only want to log out of one device - not all devices.
+router.post('/users/logout',auth, async (req, res)=>{
+  try {
+    // console.log("1):",req.user.tokens);
+    req.user.tokens=req.user.tokens.filter(token=>token.token!==req.token);
+    await req.user.save();
+    // console.log("2):",req.user.tokens);
+    res.status(200).send({success:"You've logged out!"});
+  } catch(e){
+    res.status(500).send(e);
+  }
+})
+
+router.post('/users/logoutAll', auth, async (req,res)=>{
+  try {
+    req.user.tokens=[];
+    await req.user.save();
+    res.status(200).send({success:"You've logged out of all acounts!"});
+  } catch(e){
+    res.status(500).send(e);
+  }
+})
+
 // Route in its current form (after adding auth) is no longer needed as we will see other user's data. Route will be repurposed to send back the user's data.
 // router.get('/users', auth, async(req,res)=>{
 //   try {
