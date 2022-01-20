@@ -17,6 +17,7 @@ router.post('/tasks', auth, async (req,res)=>{
 })
 
 // get /tasks?completed=true
+// get /tasks?limit=10&skip=20    // limit is number per page
 router.get('/tasks',auth, async(req, res)=>{
   try {
     const match={};
@@ -28,6 +29,10 @@ router.get('/tasks',auth, async(req, res)=>{
     await req.user.populate({
       path: 'tasks',
       match,
+      options: {
+        limit: parseInt(req.query.limit),
+        skip: parseInt(req.query.skip),
+      },
     });
     res.status(200).send(req.user.tasks);
   } catch(e){
