@@ -59,6 +59,13 @@ const userSchema = new mongoose.Schema({
   }],
 })
 
+// Reference between user and task is on a virtual field. We don't change what we store for the user document.
+userSchema.virtual('tasks',{
+  ref: 'Task',
+  localField: '_id',
+  foreignField: 'owner'
+})
+
 // Instance method to limit data being sent back to user.
 // userSchema.methods.getPublicProfile = function(){
   // Second method is just to rename method to "toJSON". In this form it doesn't need to be specifically called on the routes as it did when called "getPublicProfile".

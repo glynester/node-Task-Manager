@@ -87,6 +87,25 @@ app.listen(port,()=>{
   console.log("Server is up and running on port "+port);
 });
 
+
+
+// demo of features we now have access to
+// const Task = require('./models/task');
+// const User = require('./models/user');
+// const main = async ()=>{
+//   // const task = await Task.findById('61e98d1fc3045617555ac01f');
+//   // // NB Populate allows us to populate data from a relationship.
+//   // // In my version of mongoose the command "task.populate('owner').execPopulate()" is just task.populate('owner')
+//   // await task.populate('owner');
+//   // // task.owner will now be the whole profile document. Before the populate line was included only the ID of the owner ws returned.
+//   // console.log(task.owner);
+//   //~~~~~~~~~~~~~~~~~~~
+//   const user=await User.findById('61e987435d8384fb55971e80');
+//   await user.populate('tasks');
+//   console.log(user.tasks);
+// }
+// main();
+
 // const pet ={
 //   name: "BooBoo"
 // }
