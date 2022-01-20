@@ -93,18 +93,19 @@ router.get('/users/me', auth, async(req,res)=>{
 //   })
 // })
 
-router.get('/users/:id',async (req,res)=>{
-  const _id=req.params.id;  // Mongoose auto converts string ID into object ID. No need to run ObjectId(_id),
-  try {
-    const user=await User.findById(_id);
-    if (!user){
-      return res.status(404).send();
-    }
-    res.status(200).send(user); 
-  } catch(e){
-    res.status(500).send(e);
-  }
-})
+// This route is now not required.
+// router.get('/users/:id',async (req,res)=>{
+//   const _id=req.params.id;  // Mongoose auto converts string ID into object ID. No need to run ObjectId(_id),
+//   try {
+//     const user=await User.findById(_id);
+//     if (!user){
+//       return res.status(404).send();
+//     }
+//     res.status(200).send(user); 
+//   } catch(e){
+//     res.status(500).send(e);
+//   }
+// })
 
 // app.get('/users/:id',(req,res)=>{
 //   const _id=req.params.id;  // Mongoose auto converts string ID into object ID. No need to run ObjectId(_id),
@@ -120,7 +121,9 @@ router.get('/users/:id',async (req,res)=>{
 // })
 
 // Update routes are the most complex.
-router.patch('/users/:id',async (req, res)=>{
+// Route amended because we no longer update by any ID
+// router.patch('/users/:id',async (req, res)=>{
+router.patch('/users/me', auth, async (req, res)=>{
   const updates=Object.keys(req.body);
   const allowedUpdates=['name','email','password','age'];  // Without this mongoose doesn't throw an error if you try to update something that doesn't exist like {'religion':'agnostic'}
   if (!updates.every(v=>allowedUpdates.includes(v))){
@@ -134,28 +137,35 @@ router.patch('/users/:id',async (req, res)=>{
       // });
     // 
     // The lines below (up to await user.save()) replace commented code above. Need to split out findByIdAndUpdate so that the middleware can be used, as it runs "pre" to 'save' running.  
-    const user=await User.findById(req.params.id);
-    if (!user){
-      return res.status(404).send({error:"User not found"});
-    }
+    // const user=await User.findById(req.params.id);
+    // if (!user){
+    //   return res.status(404).send({error:"User not found"});
+    // }
     // console.log("Prior to upates and save: ", user)
-    updates.forEach(update=>user[update]=req.body[update]);
+    updates.forEach(update=>req.user[update]=req.body[update]);
     // console.log("After upates but before save: ", user)
-    await user.save();    // Middleware can now be used as it runs "pre" to 'save' running.
-    res.status(202).send(user);
+    await req.user.save();    // Middleware can now be used as it runs "pre" to 'save' running.
+    res.status(202).send(req.user);
   } catch(e){
     res.status(400).send(e);
   }
   
 })
 
-router.delete('/users/:id',async (req,res)=>{
+// Now can't delete any user by profile
+// router.delete('/users/:id',async (req,res)=>{
+router.delete('/users/me', auth, async (req,res)=>{
   try {
-    const user=await User.findByIdAndDelete(req.params.id);
-    if (!user){
-      return res.status(404).send({error: "No such user"})
-    }
-    res.status(200).send(user);
+    // const user=await User.findByIdAndDelete(req.params.id);
+    // Using the middleware makes req.user._id available
+    // const user=await User.findByIdAndDelete(req.user._id);
+    // if (!user){
+    //   return res.status(404).send({error: "No such user"})
+    // }
+    // Will now use remove method on mongoose document
+    await req.user.remove();
+    // res.status(200).send(user);
+    res.status(200).send(req.user);
   } catch(e){
     res.status(500).send(e);
   }
