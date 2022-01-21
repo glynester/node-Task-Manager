@@ -111,4 +111,19 @@ router.delete('/users/me/avatar', auth, async (req,res)=>{
   }
 })
 
+// no auth on this route so we can view in browser
+router.get('/users/:id/avatar', async (req, res)=>{
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user || !user.avatar){
+      throw new Error('Problem!!!') 
+    }
+    res.set('Content-Type','image/jpg');   // header key value pair. Tell requestor what type of data they're getting back. WHen we send json back express auto sets cont-type to "application/json"
+    res.send(user.avatar);    // Img can be seen on http://localhost:3000/users/61e9d2f40c663bf37f946823/avatar
+  } catch(e){
+    res.status(404).send({error:error.message});
+  }
+
+})
+
 module.exports=router;
