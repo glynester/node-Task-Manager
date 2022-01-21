@@ -1,4 +1,5 @@
 const express=require('express');
+const multer=require('multer');
 const User=require('../models/user');
 const auth=require('../middleware/auth')
 const router=new express.Router();
@@ -71,6 +72,14 @@ router.delete('/users/me', auth, async (req,res)=>{
   } catch(e){
     res.status(500).send(e);
   }
+})
+
+const upload=multer({   // An options object is passed to multer.
+  dest: 'avatars',      // This folder is autocreated
+})
+// upload middleware added. Key on the upload file = 'avatar':file_to_up_load.jpg
+router.post('/users/me/avatar', upload.single('avatar'), (req, res)=>{
+  res.status(200).send({sucess: "Avatar uploaded correctly"});
 })
 
 module.exports=router;
