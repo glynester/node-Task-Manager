@@ -75,7 +75,8 @@ router.delete('/users/me', auth, async (req,res)=>{
 })
 
 const upload=multer({   // An options object is passed to multer.
-  dest: 'avatars',      // This folder is autocreated
+  // By removing 'dest', the data is now passed through to our function.
+  // dest: 'avatars',      // This folder is autocreated
   limits: {
     fileSize: 1000000,    // 1MB size limit
   },
@@ -87,10 +88,27 @@ const upload=multer({   // An options object is passed to multer.
   }
 })
 // upload middleware added. Key on the upload file = 'avatar':file_to_up_load.jpg
-router.post('/users/me/avatar', upload.single('avatar'), (req, res)=>{
+// Add authorisation middleware before allowing the user to upload a file.
+router.post('/users/me/avatar',auth, upload.single('avatar'), async (req, res)=>{
+  // we can access the validated image data now because we stopped the save to 'dest' in multer
+  req.user.avatar=req.file.buffer;
+  await req.user.save();
   res.status(200).send({success: "Avatar uploaded correctly"});
 },(error, req, res, next)=>{    // Must have all 4 parameters to handle error correctly
   res.status(400).send({error: error.message});
+})
+
+router.delete('/users/me/avatar', auth, async (req,res)=>{
+  if (!req.user.avatar){
+    return res.send({error: "No avatar to delete"});
+  }
+  req.user.avatar=undefined;
+  try {
+    await req.user.save();
+    res.status(200).send({success: "Avatar successfully deleted"});
+  } catch(e){
+    res.status(400).send({error: e.message});
+  }
 })
 
 module.exports=router;
