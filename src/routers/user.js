@@ -81,14 +81,16 @@ const upload=multer({   // An options object is passed to multer.
   },
   fileFilter(req, file, cb){
     if (!file.originalname.match(/\.(jpe?g|png)$/)){
-        return cb(new Error('File not of required image type (jpg, jpeg, png)'))
+      return cb(new Error('File not of required image type (jpg, jpeg, png)'))
     }
     cb(undefined, true);    // accepts upload
   }
 })
 // upload middleware added. Key on the upload file = 'avatar':file_to_up_load.jpg
 router.post('/users/me/avatar', upload.single('avatar'), (req, res)=>{
-  res.status(200).send({sucess: "Avatar uploaded correctly"});
+  res.status(200).send({success: "Avatar uploaded correctly"});
+},(error, req, res, next)=>{    // Must have all 4 parameters to handle error correctly
+  res.status(400).send({error: error.message});
 })
 
 module.exports=router;

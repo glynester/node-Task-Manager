@@ -9,7 +9,7 @@ const app = express();
 const port = process.env.PORT||3000; // heroku => process.env.PORT
 
 // const multer = require('multer');
-// const { request } = require('express');
+
 // // destination folder will be automatically created.
 // const upload=multer({
 //   dest: 'images',
@@ -19,7 +19,7 @@ const port = process.env.PORT||3000; // heroku => process.env.PORT
 //   fileFilter(req, file, cb){   // Will be called internally by multer
 //     // if (!file.originalname.endsWith('.pdf')){
 //      if (!file.originalname.match(/(\.docx?)$/i)){    // or \.(doc|docx)$
-//        return cb(new Error('File must be a word document'))  // something goes wrong
+//        return cb(new Error('File must be a word document'));  // something goes wrong
 //     }
 //     cb(undefined, true);  // if things go well
 //     // 3 options: 
@@ -32,6 +32,18 @@ const port = process.env.PORT||3000; // heroku => process.env.PORT
 // // multer will look for file named 'uploadFile' in the request. Key of file in postman is 'uploadFile'.
 // app.post('/upload', upload.single('uploadFile'), (req,res)=>{
 //   res.status(200).send({sucess: "File uploaded correctly"});
+// })
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// // const errorMiddleware=(req,res,next)=>{
+// //   throw new Error('From my middleware')
+// // }
+// // app.post('/upload', errorMiddleware, (req,res)=>{
+// app.post('/upload', upload.single('uploadFile'), (req, res)=>{
+//   res.status(200).send({sucess: "File uploaded correctly"});
+//   // Below function must be tacked on to handle uncaught errors - e.g. error thrown by multer after getting the wrong file type
+// }, (error, req, res, next)=>{     // provide all 4 parameters so express knows we are trying to send an error back
+//   res.status(400).send({error: error.message});
 // })
 
 
