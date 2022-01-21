@@ -12,7 +12,21 @@ const port = process.env.PORT||3000; // heroku => process.env.PORT
 // const { request } = require('express');
 // // destination folder will be automatically created.
 // const upload=multer({
-//   dest: 'images'
+//   dest: 'images',
+//   limits: {
+//     fileSize: 1000000,     // 1mb
+//   },
+//   fileFilter(req, file, cb){   // Will be called internally by multer
+//     // if (!file.originalname.endsWith('.pdf')){
+//      if (!file.originalname.match(/(\.docx?)$/i)){    // or \.(doc|docx)$
+//        return cb(new Error('File must be a word document'))  // something goes wrong
+//     }
+//     cb(undefined, true);  // if things go well
+//     // 3 options: 
+//     // cb(new Error('File must be a ... type document'))  // something goes wrong
+//     // cb(undefined, true);  // if things go well
+//     // cb(undefined, false); // would silently reject upload.
+//   }
 // })
 // // Use multer middleware.
 // // multer will look for file named 'uploadFile' in the request. Key of file in postman is 'uploadFile'.
