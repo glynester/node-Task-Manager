@@ -82,6 +82,7 @@ userSchema.virtual('tasks',{
   const userObject=user.toObject(); // Just raw profile data.
   delete userObject.tokens;
   delete userObject.password;
+  delete userObject.avatar; // This is being served up now so don't need to return it here - will save space.
   return userObject;
 }
 

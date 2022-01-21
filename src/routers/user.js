@@ -1,5 +1,6 @@
 const express=require('express');
 const multer=require('multer');
+const sharp=require('sharp');
 const User=require('../models/user');
 const auth=require('../middleware/auth')
 const router=new express.Router();
@@ -91,7 +92,9 @@ const upload=multer({   // An options object is passed to multer.
 // Add authorisation middleware before allowing the user to upload a file.
 router.post('/users/me/avatar',auth, upload.single('avatar'), async (req, res)=>{
   // we can access the validated image data now because we stopped the save to 'dest' in multer
-  req.user.avatar=req.file.buffer;
+  // req.user.avatar=req.file.buffer;
+  const buffer = await sharp(req.file.buffer).resize({ width:250, height:250}).png().toBuffer(); // convert back to buffer we can access.
+  req.user.avatar=buffer;
   await req.user.save();
   res.status(200).send({success: "Avatar uploaded correctly"});
 },(error, req, res, next)=>{    // Must have all 4 parameters to handle error correctly
@@ -118,7 +121,8 @@ router.get('/users/:id/avatar', async (req, res)=>{
     if (!user || !user.avatar){
       throw new Error('Problem!!!') 
     }
-    res.set('Content-Type','image/jpg');   // header key value pair. Tell requestor what type of data they're getting back. WHen we send json back express auto sets cont-type to "application/json"
+    // now served up as png using sharp
+    res.set('Content-Type','image/png');   // header key value pair. Tell requestor what type of data they're getting back. WHen we send json back express auto sets cont-type to "application/json"
     res.send(user.avatar);    // Img can be seen on http://localhost:3000/users/61e9d2f40c663bf37f946823/avatar
   } catch(e){
     res.status(404).send({error:error.message});
