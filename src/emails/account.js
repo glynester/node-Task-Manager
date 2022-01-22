@@ -1,8 +1,8 @@
 const sgMail = require('@sendgrid/mail');
 
-const sendgridAPIKey = 'XXXXXXXXXXXXXXXXXX';
+// const sendgridAPIKey = 'xxx'; // Moved to env variables file.
 
-sgMail.setApiKey(sendgridAPIKey);
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const sendWelcomeEmail = (email, name)=>{
   // This is aynchronous - send method returns a promise.

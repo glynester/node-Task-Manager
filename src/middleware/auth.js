@@ -6,7 +6,7 @@ const auth = async (req,res,next)=>{
   try {
     const token=req.header("authorization").replace('Bearer ','');  // Looks for header that user has to provide. Must spell authorization with a "Z".
     // console.log(token);
-    const decoded=jwt.verify(token,'thisismysecret');  // validates
+    const decoded=jwt.verify(token,process.env.JWT_SECRET);  // validates
     const user = await User.findOne({_id:decoded._id,'tokens.token':token});  // Look inside tokens array to find one that matches. Brings back associated user.
     if (!user){
       throw new Error();

@@ -6,7 +6,8 @@ const userRouter=require('./routers/user');
 const taskRouter=require('./routers/task');
 
 const app = express();
-const port = process.env.PORT||3000; // heroku => process.env.PORT
+const port = process.env.PORT; // PORT now setup locally also.
+// const port = process.env.PORT||3000; // heroku => process.env.PORT
 
 // const multer = require('multer');
 
