@@ -1,27 +1,27 @@
 const request = require('supertest');
-const jwt=require('jsonwebtoken');
-const mongoose=require('mongoose');
+// const jwt=require('jsonwebtoken');
+// const mongoose=require('mongoose');
 // We need the express app without calling "app.listen".
 const app = require('../src/app');
 const User=require('../src/models/user');
+const { userOneId, userOne, setupDatabase } = require('./fixtures/db');
 // userOneId needed in more than one place.
-const userOneId = new mongoose.Types.ObjectId();
-const userOne={
-  _id: userOneId,
-  name: "Sid Xion",
-  email: "sx@gleammail.com",
-  password: "sx123XYZ",
-  tokens: [{
-    token: jwt.sign({_id: userOneId}, process.env.JWT_SECRET)
-  }]
-}
+// Refactored to db.js
+// const userOneId = new mongoose.Types.ObjectId();
+// const userOne={
+//   _id: userOneId,
+//   name: "Sid Xion",
+//   email: "sx@gleammail.com",
+//   password: "sx123XYZ",
+//   tokens: [{
+//     token: jwt.sign({_id: userOneId}, process.env.JWT_SECRET)
+//   }]
+// }
 // Environment should be reset each time the test suite is run.
 // Ensure users are gone before test runs.
-beforeEach(async()=>{
-  console.log("Before each has run");
-  await User.deleteMany({});
-  await new User(userOne).save();
-})
+beforeEach(
+  setupDatabase
+)
 
 // afterEach(()=>{
 //   console.log("After each has run");
